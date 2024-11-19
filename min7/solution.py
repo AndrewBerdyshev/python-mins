@@ -1,26 +1,32 @@
 import pytest
-from io import StringIO
-import sys
 
 def deprecated(since=None, will_be_removed=None):
     def decorator(func):
         def wrapper(*args, **kwargs):
-            name = func.__name__
+            name = func.__name__ 
+            message = f"Warning: function {name} is deprecated"
+            first_part = message
             if since and will_be_removed:
-                print(f"Warning: function {name} is deprecated since version {since}. It will be removed in version {will_be_removed}.")
+                second_part = f" since version {since}. It will be removed in version {will_be_removed}."
             elif since:
-                print(f"Warning: function {name} is deprecated since version {since}. It will be removed in future versions.")
+                second_part = f" since version {since}. It will be removed in future versions."
             elif will_be_removed:
-                print(f"Warning: function {name} is deprecated. It will be removed in version {will_be_removed}.")
+                second_part = f". It will be removed in version {will_be_removed}."
             else:
-                print(f"Warning: function {name} is deprecated. It will be removed in future versions.")
-                
+                second_part = ". It will be removed in future versions."
+            print(f"{first_part}{second_part}")
             return func(*args, **kwargs)
         return wrapper
+
+    if callable(since):
+        func = since
+        since = None
+        will_be_removed = None
+        return decorator(func)
     return decorator
 
 def test1(capsys):
-    @deprecated()
+    @deprecated
     def foo1():
         print("Hello from foo1")
 
@@ -60,7 +66,7 @@ def test4(capsys):
     assert "Hello from foo4" in captured.out
 
 def test5(capsys):
-    @deprecated()
+    @deprecated
     def foo5():
         print("Hello from foo5")
 

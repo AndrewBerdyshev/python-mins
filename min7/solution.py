@@ -1,29 +1,26 @@
 import pytest
+import functools
 
-def deprecated(since=None, will_be_removed=None):
-    def decorator(func):
-        def wrapper(*args, **kwargs):
+def deprecated(func=None, *, since=None, will_be_removed=None):
+    if func is None:
+        return functools.partial(deprecated, since=since, will_be_removed=will_be_removed)
+
+    def inner(*args, **kwargs):
             name = func.__name__ 
             message = f"Warning: function {name} is deprecated"
             first_part = message
+            removed = "It will be removed"
             if since and will_be_removed:
-                second_part = f" since version {since}. It will be removed in version {will_be_removed}."
+                second_part = f" since version {since}. {removed} in version {will_be_removed}."
             elif since:
-                second_part = f" since version {since}. It will be removed in future versions."
+                second_part = f" since version {since}. {removed} in future versions."
             elif will_be_removed:
-                second_part = f". It will be removed in version {will_be_removed}."
+                second_part = f". {removed} in version {will_be_removed}."
             else:
-                second_part = ". It will be removed in future versions."
+                second_part = f". {removed} in future versions."
             print(f"{first_part}{second_part}")
             return func(*args, **kwargs)
-        return wrapper
-
-    if callable(since):
-        func = since
-        since = None
-        will_be_removed = None
-        return decorator(func)
-    return decorator
+    return inner
 
 def test1(capsys):
     @deprecated

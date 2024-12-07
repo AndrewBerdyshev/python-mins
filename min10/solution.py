@@ -1,15 +1,14 @@
-def singleton(cls):
-    instances = {}
+class SingletonMeta(type):
+    _instances = {}
 
-    def get_instance(*args, **kwargs):
-        if cls not in instances:
-            instances[cls] = cls(*args, **kwargs)
-        return instances[cls]
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            instance = super().__call__(*args, **kwargs)
+            cls._instances[cls] = instance
+        return cls._instances[cls]
 
-    return get_instance
 
-@singleton
-class GlobalCounter:
+class GlobalCounter(metaclass=SingletonMeta):
     def __init__(self):
         self.count = 0
 
@@ -19,9 +18,11 @@ class GlobalCounter:
     def get_count(self):
         return self.count
 
-def runTests():
+
+def test1(capsys):
     gc1 = GlobalCounter()
     gc2 = GlobalCounter()
     assert id(gc1) == id(gc2)
-
-runTests()
+    gc1.increment()
+    assert gc1.get_count() == 1
+    assert gc2.get_count() == 1

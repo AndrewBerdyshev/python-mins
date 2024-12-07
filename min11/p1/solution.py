@@ -4,15 +4,8 @@ import itertools
 def cycle(it: Iterable):
     if len(it) == 0:
         return []
-    i = iter(it)
-    curr = next(i)
     while True:
-        try:
-            yield curr
-            curr = next(i)
-        except StopIteration:
-            i = iter(it)
-            curr = next(i)
+        yield from it
 
 def take(seq, num) -> List:
     return list(itertools.islice(seq, num))

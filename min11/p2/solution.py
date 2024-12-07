@@ -4,14 +4,9 @@ def chain(*args):
     for it in args:
         if len(it) == 0:
             continue
-        i = iter(it)
-        curr = next(i)
-        while True:
-            try:
-                yield curr
-                curr = next(i)
-            except StopIteration:
-               break
+        yield from it
+
+print(chain([1, 2, 3], ['a', 'b'], [42, 13, 7]))
 
 def test1(capsys):
     assert list(itertools.chain([1, 2, 3], ['a', 'b'], [42, 13, 7])) == \

@@ -2,7 +2,7 @@ def format_table(benchmarks, algos, results):
     column_width = []
     column_width.append(max([len(x) for x in benchmarks] + [len("Benchmark")]))
     for i in range(len(algos)):
-        column_width.append(max([len(algos[i])] + [len(str(x[i]))+3 for x in results]))
+        column_width.append(max(len(algos[i]), max(len(f"{x[i]:.10f}") for x in results)) + 3)
     
     header = f"| {'Benchmark':<{column_width[0]}} | " + \
              " | ".join(f"{algo:<{column_width[i+1]}}" for i, algo in enumerate(algos)) + " |"

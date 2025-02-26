@@ -12,7 +12,7 @@ def format_table(benchmarks, algos, results):
     rows = []
     for i, benchmark in enumerate(benchmarks):
         row = f"| {benchmark:<{column_width[0]}} | " + \
-              " | ".join(f"{results[i][j]:<{column_width[j+1]}.2f}" for j in range(len(algos))) + " |"
+              " | ".join(f"{results[j][i]:<{column_width[j+1]}.2f}" for j in range(len(algos))) + " |"
         rows.append(row)
     
     print(header)
